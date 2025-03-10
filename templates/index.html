@@ -3,171 +3,189 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Hallo, ini adalah proyek yang saya buat dengan bantuan GPT, Gemini, deepseek, ini cuma proyek untuk wolker.">
+    <meta name="description"
+        content="Proxy Checker Yumi - Proyek dengan FastAPI dan tampilan modern.ini adalah proyek yang saya buat dengan bantuan GPT, Gemini, deepseek, ini cuma proyek untuk wolker.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proxy Checker Yumi</title>
-    <link rel="icon" type="image/x-icon" href="https://github.com/user-attachments/assets/b5feabb7-3f20-4028-9436-e3f3307dd2ae">
+    <meta property="twitter:image"
+        content="https://github.com/user-attachments/assets/b5feabb7-3f20-4028-9436-e3f3307dd2ae">
+    <meta property="twitter:title" content="Proxy Checker Yumi">
+    <meta property="twitter:description"
+        content="Proxy Checker Yumi - Proyek dengan FastAPI dan tampilan modern. ini adalah proyek yang saya buat dengan bantuan GPT, Gemini, deepseek, ini cuma proyek untuk wolker.">
+    <meta property="og:site_name" content="https://github.com/mhmmddnl02">
+    <meta property="og:description"
+        content="Proxy Checker Xion - Proyek dengan FastAPI dan tampilan modern. ini adalah proyek yang saya buat dengan bantuan GPT, Gemini, deepseek, ini cuma proyek untuk wolker." />
+    <link rel="icon" type="image/x-icon"
+        href="https://github.com/user-attachments/assets/b5feabb7-3f20-4028-9436-e3f3307dd2ae">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Global styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            background-image: radial-gradient(at 47% 33%, hsl(262.35, 83%, 7%) 0, transparent 59%),
+                radial-gradient(at 82% 65%, hsl(218.18, 39%, 11%) 0, transparent 55%);
+        }
+
+        .glassmorphism {
+            background: rgba(17, 25, 40, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+
+        .shine {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(30deg);
+            transition: 0.6s;
+            opacity: 0;
+        }
+
+        .shine:hover::after {
+            opacity: 1;
+            transition: 0s;
+        }
+    </style>
     <script>
+        // Aktifkan mode dark sesuai preferensi pengguna
         document.addEventListener("DOMContentLoaded", function () {
-            const htmlElement = document.documentElement;
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            if (prefersDark) {
-                htmlElement.classList.add("dark");
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                document.documentElement.classList.add("dark");
             }
         });
     </script>
 </head>
 
-<body class="bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans">
-    <div class="container mx-auto p-4 pt-8">
-        <!-- Kontainer utama diubah ke max-w-md untuk tampilan mobile -->
-        <div class="max-w-md mx-auto bg-gray-50 dark:bg-[#1e293b] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md">
-            <div class="px-6 py-4">
-                <h1 class="text-2xl font-semibold text-center mb-5 dark:text-gray-50">Enter Proxy Details</h1>
-                <div class="relative">
-                    <textarea id="proxy-input" rows="4"
-                        class="block p-4 w-full text-base text-gray-900 bg-gray-50 rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="43.218.77.16
-37.202.222.182:8443
-216.58.200.14"></textarea>
-                    <span id="proxy-count"
-                        class="absolute top-3 right-3 text-sm text-gray-500 dark:text-gray-400">0/20</span>
+<body class="min-h-screen text-gray-100 py-8 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Input Section -->
+        <div class="glassmorphism p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <i class="fas fa-terminal text-purple-400 mr-2"></i>
+                <h2 class="text-xl font-semibold text-white">Enter Proxy Details</h2>
+            </div>
+            <div class="relative">
+                <textarea id="proxy-input" rows="3"
+                    class="w-full px-4 py-3 bg-gray-900/50 text-gray-100 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none shadow-inner"
+                    placeholder="Format: IP atau IP:PORT pisahkan dengan enter"></textarea>
+                <div class="absolute right-3 bottom-3 flex gap-1 text-xs text-gray-400">
+                    <span id="proxy-count">0</span><span></span>
                 </div>
-                <div class="flex flex-wrap justify-between mt-4 space-y-2">
-                    <div class="flex space-x-2">
-                        <button id="example-btn"
-                            class="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700">
-                            <span class="mr-1">💡</span> Examples
-                        </button>
-                        <button id="clear-btn"
-                            class="flex items-center justify-center px-4 py-2 text-sm font-medium text-red-900 focus:outline-none bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 focus:ring-4 focus:ring-red-200 dark:focus:ring-red-700 dark:bg-red-800 dark:text-red-100 dark:border-red-700 dark:hover:bg-red-700">
-                            <span class="mr-1">🗑️</span> Clear
-                        </button>
-                    </div>
-                    <button id="check-proxies"
-                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">
-                        <span class="mr-1">🔍</span> Check Proxies
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="flex gap-2">
+                    <button id="example-btn"
+                        class="text-sm px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded transition-colors flex items-center">
+                        <i class="far fa-lightbulb mr-1"></i> Examples
+                    </button>
+                    <button id="clear-btn"
+                        class="text-sm px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded transition-colors flex items-center">
+                        <i class="fas fa-eraser mr-1"></i> Clear
                     </button>
                 </div>
+                <button id="check-proxies"
+                    class="shine w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium py-2 px-6 rounded-lg transition-all hover:shadow-lg hover:from-purple-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50">
+                    <i class="fas fa-search-location"></i>
+                    <span>Check Proxies</span>
+                </button>
             </div>
         </div>
 
-        <div id="loading" class="hidden text-center text-gray-500 mt-4 dark:text-gray-400 text-base">
-            <i class="fas fa-spinner fa-spin mr-1"></i> Checking...
+        <!-- Loading Indicator -->
+        <div id="loading" class="hidden glassmorphism p-10 mb-8 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-1"></span>
+                <span class="inline-block w-3 h-3 bg-indigo-500 rounded-full mr-1"></span>
+                <span class="inline-block w-3 h-3 bg-blue-500 rounded-full"></span>
+            </div>
+            <p class="text-gray-300 text-lg">Checking proxies...</p>
+            <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4 overflow-hidden">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                    style="width: 0%"></div>
+            </div>
         </div>
 
-        <!-- Kontainer hasil juga diubah ke max-w-md -->
-        <div id="result-container" class="max-w-md mx-auto mt-6 p-4 hidden">
-            <div id="result-body" class="grid gap-4">
-                <!-- Contoh card hasil -->
-                <div class="bg-gray-50 dark:bg-[#1e293b] border border-red-500 rounded-lg p-4 shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center space-x-3">
-                            <span class="font-semibold text-lg">Proxy IP (Contoh INACTIVE)</span>
-                            <span class="inline-flex items-center justify-center px-2 py-0 text-xs font-bold text-white bg-red-500 rounded-full">INACTIVE</span>
-                        </div>
-                        <div class="flex items-center space-x-1">
-                            <span class="text-xl">🏳️</span>
-                            <span class="font-medium dark:text-gray-100">Negara (Contoh INACTIVE)</span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-y-3 text-base dark:text-gray-300">
-                        <div>
-                            <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-blue-200 rounded-full dark:bg-blue-700 dark:text-gray-400">
-                                <i class="fas fa-clock"></i>
-                            </span>
-                            Delay: <span class="font-medium dark:text-white">-</span>
-                        </div>
-                        <div>
-                            <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-green-200 rounded-full dark:bg-green-700 dark:text-gray-400">
-                                <i class="fas fa-globe"></i>
-                            </span>
-                            Country: <span class="font-medium dark:text-white">-</span>
-                        </div>
-                        <div>
-                            <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-purple-200 rounded-full dark:bg-purple-700 dark:text-gray-400">
-                                <i class="fas fa-plug"></i>
-                            </span>
-                            Port: <span class="font-medium dark:text-white">N/A</span>
-                        </div>
-                        <div>
-                            <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-indigo-200 rounded-full dark:bg-indigo-700 dark:text-gray-400">
-                                <i class="fas fa-network-wired"></i>
-                            </span>
-                            ASN: <span class="font-medium dark:text-white">-</span>
-                        </div>
-                        <div class="col-span-2">
-                            <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-teal-200 rounded-full dark:bg-teal-700 dark:text-gray-400">
-                                <i class="fas fa-building"></i>
-                            </span>
-                            Organization: <span class="font-medium dark:text-white">-</span>
-                        </div>
-                    </div>
-                </div>
+        <!-- Results Container -->
+        <div id="result-container" class="hidden space-y-6">
+            <div id="result-body" class="grid gap-5">
+                <!-- Hasil pengecekan proxy akan ditampilkan di sini -->
             </div>
         </div>
     </div>
 
-    <footer class="bg-gray-200 dark:bg-[#111827] py-4 mt-8 max-w-md mx-auto">
+    <!-- Footer -->
+    <footer class="bg-gray-200 dark:bg-[#111827] py-2 mt-10 w-4/5 mx-auto text-sm">
         <div class="container mx-auto px-4 flex flex-col justify-center items-center">
-            <div class="text-gray-800 dark:text-gray-300 text-center text-sm">
+            <div class="text-gray-800 dark:text-gray-300 text-center">
                 &copy; 2025 Proxy Checker. All rights reserved.
             </div>
-            <div class="flex space-x-3 mt-2">
-                <a href="https://github.com/tadesomika" target="_blank"
+            <div class="flex space-x-4 mt-1">
+                <a href="https://github.com/mhmmddnl02" target="_blank"
                     class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100">
-                    <i class="fab fa-github text-lg"></i>
+                    <i class="fab fa-github"></i>
                 </a>
                 <a href="https://www.instagram.com/mhmmddnl02/" target="_blank"
                     class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100">
-                    <i class="fab fa-instagram text-lg"></i>
+                    <i class="fab fa-instagram"></i>
                 </a>
                 <a href="https://t.me/XionAlva" target="_blank"
                     class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100">
-                    <i class="fab fa-telegram text-lg"></i>
+                    <i class="fab fa-telegram"></i>
                 </a>
             </div>
         </div>
     </footer>
 
     <script>
+        // Hitung jumlah proxy yang dimasukkan
         document.getElementById("proxy-input").addEventListener("input", function () {
             const proxies = this.value.trim().split("\n").filter(line => line);
             document.getElementById("proxy-count").textContent = `${proxies.length}/20`;
         });
 
+        // Tombol Clear
         document.getElementById("clear-btn").addEventListener("click", function () {
             document.getElementById("proxy-input").value = "";
             document.getElementById("proxy-count").textContent = "0/20";
         });
 
+        // Tombol Example
         document.getElementById("example-btn").addEventListener("click", function () {
             document.getElementById("proxy-input").value = "36.95.152.58:12137\n37.202.222.182:8443\n216.58.200.14";
             document.getElementById("proxy-count").textContent = "3/20";
         });
 
+        // Pengecekan Proxy menggunakan API FastAPI
         document.getElementById("check-proxies").addEventListener("click", async function () {
             const input = document.getElementById("proxy-input").value.trim();
             if (!input) return;
 
+            // Tampilkan loading indicator dan sembunyikan hasil
             document.getElementById("loading").classList.remove("hidden");
             document.getElementById("result-container").classList.add("hidden");
 
+            // Ambil maksimal 20 proxy
             const proxies = input.split("\n").slice(0, 20);
             let results = [];
+
+            // Loop tiap proxy dan panggil API FastAPI
             for (const proxy of proxies) {
                 const [ip, port] = proxy.split(":");
                 if (!ip) continue;
-                let actualPort = port;
-
-                if (!port) {
-                    actualPort = "443";
-                }
-
+                let actualPort = port || "443";
                 try {
                     const apiUrl = `/api/v1?ip=${ip}&port=${actualPort}`;
                     const res = await fetch(apiUrl);
@@ -179,58 +197,97 @@
                 }
             }
 
+            // Render hasil pengecekan
             const resultBody = document.getElementById("result-body");
             resultBody.innerHTML = "";
             results.forEach(data => {
                 const isActive = data.proxyip && !data.error;
-                const row = `
-                    <div class="bg-gray-50 dark:bg-[#1e293b] border ${isActive ? 'border-green-500' : 'border-red-500'} rounded-lg p-4 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="flex items-center space-x-3">
-                                <span class="font-semibold text-lg">${data.ip}</span>
-                                <span class="inline-flex items-center justify-center px-2 py-0 text-xs font-bold text-white ${isActive ? 'bg-green-500' : 'bg-red-500'} rounded-full">${isActive ? 'ACTIVE' : 'INACTIVE'}</span>
-                            </div>
-                            <div class="flex items-center space-x-1">
-                                ${data.countryFlag ? `<span class="text-xl">${data.countryFlag}</span>` : ''}
-                                <span class="font-medium dark:text-gray-100">${data.countryName || 'Unknown'}</span>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-y-3 text-base dark:text-gray-300">
-                            <div>
-                                <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-blue-200 rounded-full dark:bg-blue-700 dark:text-gray-400">
-                                    <i class="fas fa-clock"></i>
-                                </span>
-                                Delay: <span class="font-medium dark:text-white">${data.delay || '-'}</span>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-green-200 rounded-full dark:bg-green-700 dark:text-gray-400">
-                                    <i class="fas fa-globe"></i>
-                                </span>
-                                Country: <span class="font-medium dark:text-white">${data.countryName || 'Unknown'}</span>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-purple-200 rounded-full dark:bg-purple-700 dark:text-gray-400">
-                                    <i class="fas fa-plug"></i>
-                                </span>
-                                Port: <span class="font-medium dark:text-white">${data.port || (data.error ? 'N/A' : '-')}</span>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-indigo-200 rounded-full dark:bg-indigo-700 dark:text-gray-400">
-                                    <i class="fas fa-network-wired"></i>
-                                </span>
-                                ASN: <span class="font-medium dark:text-white">${data.asn || 'Unknown'}</span>
-                            </div>
-                            <div class="col-span-2">
-                                <span class="inline-flex items-center justify-center p-1 text-gray-500 bg-teal-200 rounded-full dark:bg-teal-700 dark:text-gray-400">
-                                    <i class="fas fa-building"></i>
-                                </span>
-                                Organization: <span class="font-medium dark:text-white">${data.asOrganization || 'Unknown'}</span>
-                            </div>
-                        </div>
-                    </div>`;
-                resultBody.innerHTML += row;
-            });
+                const statusText = isActive ? 'ACTIVE' : 'INACTIVE';
+                const fullPort = data.port || 'N/A';
+                const flagHtml = data.countryFlag ? `<span class="text-2xl">${data.countryFlag}</span>` : '';
+                resultBody.innerHTML += `
+          <div class="glassmorphism overflow-hidden">
+            <div class="relative">
+              <div class="absolute top-0 left-0 w-1 h-full ${isActive ? 'bg-green-500' : 'bg-red-500'}"></div>
+              <div class="p-5 space-y-3">
+                <!-- Top Block: IP, Status, Port & ASN; Flag & Country -->
+                <div class="flex justify-between items-center">
+                  <!-- Kiri: IP, Status, Port & ASN -->
+                  <div class="flex flex-col">
+                    <div class="flex items-center">
+                      <h2 class="text-xl font-bold text-white">${data.ip}${data.port ? ':' + data.port : ''}</h2>
+                      <span class="ml-3 px-2 py-1 text-xs font-medium rounded-full ${isActive ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}">
+                        ${statusText}
+                      </span>
+                    </div>
+                    <div class="flex items-center text-gray-400 text-sm gap-x-1">
+                        <i class="fas fa-plug"></i>
+                        <span>Port:</span>
+                     <span class="font-medium dark:text-white">${fullPort}</span>
+                     ${data.asn ? `
+                      <span>•</span>
+                        <i class="fas fa-network-wired"></i>
+                        <span>ASN:</span>
+                    <span class="font-medium dark:text-white">${data.asn}</span>
+                         ` : ''}
+                    </div>
 
+                  </div>
+                  <!-- Kanan: Flag & Country -->
+                  <div class="flex items-center border-l border-gray-700 pl-3">
+                    ${flagHtml}
+                    <span class="ml-2 text-gray-200 font-medium">${data.countryName || 'N/A'}</span>
+                  </div>
+                </div>
+                
+                <!-- Middle Block: Country dan Organization -->
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <span class="inline-flex items-center justify-center p-1.5 bg-green-500 rounded-full mr-2 text-white">
+                      <i class="fas fa-globe-americas"></i>
+                    </span>
+                    <span class="text-base dark:text-gray-300">Country: <span class="font-medium dark:text-white">${data.countryName || 'N/A'}</span></span>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="inline-flex items-center justify-center p-1.5 bg-green-500 rounded-full mr-2 text-white">
+                      <i class="fas fa-building"></i>
+                    </span>
+                    <span class="text-base dark:text-gray-300">Organization: <span class="font-medium dark:text-white">${data.asOrganization || 'N/A'}</span></span>
+                  </div>
+                </div>
+                <!-- Separator -->
+                <div class="mt-1 pt-1 border-t border-gray-700/50"></div>
+                <!-- Bottom Block: Coordinates dan Delay (hanya tampil jika aktif) -->
+                
+                ${isActive ? `
+                  <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-green-900/60 flex items-center justify-center mr-3">
+                                            <i class="fas fa-map-pin text-green-400"></i>
+                                        </div>
+                    <div class="flex-1">
+                      <div class="text-base dark:text-gray-300">Coordinates</div>
+                      <div>
+                        <span class="font-medium dark:text-white">
+                          ${data.latitude && data.longitude ? data.latitude + ', ' + data.longitude : '-'}
+                        </span>
+                        <a href="https://www.google.com/maps?q=${data.latitude},${data.longitude}" target="_blank" class="ml-2 text-base dark:text-indigo-300 hover:underline">
+                          View on Map
+                        </a>
+                      </div>
+                    </div>
+                    <div class="flex-1 text-right">
+                      <span class="inline-flex items-center justify-center p-1.5 bg-purple-500 rounded-full mr-2 text-white">
+                        <i class="fas fa-clock"></i>
+                      </span>
+                      <span class="text-base dark:text-gray-300">Delay: <span class="font-medium dark:text-white">${data.delay || '-'}</span></span>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+            });
             document.getElementById("loading").classList.add("hidden");
             document.getElementById("result-container").classList.remove("hidden");
         });
