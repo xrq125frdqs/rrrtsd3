@@ -1,11 +1,7 @@
-
-from fastapi import FastAPI, Request,Form
+from fastapi import FastAPI, Request, Query, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse
-from helpers.proxy_checker import process_proxy 
-from fastapi.staticfiles import StaticFiles
+from helpers.proxy_checker import process_proxy
 from jinja2 import Environment, FileSystemLoader
-
-
 
 app = FastAPI()
 
@@ -17,20 +13,28 @@ async def homepage(request: Request):
     return template.render()
 
 @app.get("/api/v1")
-async def check_proxy_url_endpoint(request: Request):
-    ip_address = request.query_params.get("ip")
-    port_number = request.query_params.get("port")
-
-    if not ip_address or not port_number:
-        return JSONResponse(status_code=400, content={"error": "Parameter 'ip' dan 'port' harus diberikan dalam URL. fomat harus /?ip=192.168.1.1&port=80"})
+async def check_proxy_url_endpoint(
+    request: Request,
+    ip: str = Query(None, description="IP address proxy"),
+    port: str = Query(None, description="Port proxy")
+):
+    if ip is None or port is None:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "Parameter 'ip' dan 'port' harus diberikan dalam URL.",
+                "massage":"Format harus /api/v1?ip=192.168.1.1&port=80"
+            },
+        )
 
     try:
-        result = process_proxy(ip_address, port_number) # Panggil process_proxy yang diimport
-        proxyip, message, country_code, asn, country_name, country_flag, http_protocol, org_name, connection_time = result
+        port_number = int(port)
+        result = process_proxy(ip, port_number)
+        proxyip, message, country_code, asn, country_name, country_flag, http_protocol, org_name, connection_time, latitude, longitude = result
 
         if proxyip:
             response_data = {
-                "ip": ip_address,
+                "ip": ip,
                 "port": port_number,
                 "proxyip": True,
                 "asOrganization": org_name,
@@ -40,11 +44,13 @@ async def check_proxy_url_endpoint(request: Request):
                 "asn": asn,
                 "message": message,
                 "httpProtocol": http_protocol,
-                "delay": f"{round(connection_time)} ms"
+                "delay": f"{round(connection_time)} ms",
+                "latitude": latitude,
+                "longitude": longitude
             }
         else:
             response_data = {
-                "ip": ip_address,
+                "ip": ip,
                 "port": port_number,
                 "proxyip": False,
                 "asn": asn,
@@ -53,7 +59,9 @@ async def check_proxy_url_endpoint(request: Request):
 
         return response_data
 
+    except ValueError:
+        return JSONResponse(status_code=400, content={"error": "Port harus berupa angka."})
     except Exception as e:
-        error_message = f"Terjadi kesalahan server saat memproses proxy {ip_address}:{port_number}: {e}"
+        error_message = f"Terjadi kesalahan server saat memproses proxy {ip}:{port}: {e}"
         print(error_message)
         return JSONResponse(status_code=500, content={"error": error_message})
